@@ -196,17 +196,17 @@ def load_dict_contractions():
         }   
 
 #adding Header
-clean = open('Classification/clean_tweets.csv',encoding="ISO-8859-1",mode ='w')
+clean = open('Data/clean_tweets.csv',encoding="ISO-8859-1",mode ='w')
 Header ='sentiment,tweet'
 print(f'{Header}',file=clean)
 
 #shuffle lines
-lines = open('Classification/sentiment140.csv',encoding="ISO-8859-1",mode ='r').readlines()
+lines = open('Data/sentiment140.csv',encoding="ISO-8859-1",mode ='r').readlines()
 random.shuffle(lines)
-open('Classification/sentiment140.csv',encoding="ISO-8859-1",mode ='w').writelines(lines)
+open('Data/sentiment140.csv',encoding="ISO-8859-1",mode ='w').writelines(lines)
 
 #start preprocessing
-with open('Classification/sentiment140.csv', mode='r', encoding="ISO-8859-1") as csv_file: 
+with open('Data/sentiment140.csv', mode='r', encoding="ISO-8859-1") as csv_file: 
     csv_reader = csv.DictReader(csv_file, fieldnames=['target', 'id', 'date', 'flag', 'user', 'text'])
 
     for row in csv_reader:
