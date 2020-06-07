@@ -31,15 +31,3 @@ The pre-trained models : **Links
 
 
 
-
-
-
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> fc1b590dd59e7a6a9befd1d0af4657acaa2e8001
-
-
