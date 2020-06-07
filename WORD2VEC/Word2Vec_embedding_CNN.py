@@ -18,8 +18,8 @@ from gensim.models import Word2Vec
 from gensim.utils import simple_preprocess
 from gensim.models.keyedvectors import KeyedVectors
 
-dataset_file = 'Classification/DATA/clean_tweets.csv'
-w2v_file = 'Classification/WORD2VEC/GoogleNews-vectors-negative300.bin'
+dataset_file = 'DATA/clean_tweets.csv'
+w2v_file = 'WORD2VEC/GoogleNews-vectors-negative300.bin'
 maxlen = 100
 embedding_dim=300
 
@@ -154,7 +154,7 @@ print('\n prediction for \n',prediction[:,0])
 #save model and weights
 save_model(
     model,
-    "Classification/WORD2VEC/models/model_CNN_w2v300.h5",
+    "WORD2VEC/models/model_CNN_w2v300.h5",
     overwrite=True,
     include_optimizer=True
 )
