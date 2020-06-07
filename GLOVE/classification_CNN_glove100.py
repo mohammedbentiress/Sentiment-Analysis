@@ -13,8 +13,8 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.layers import Activation, Dropout, Dense, Flatten, GlobalMaxPool1D, Embedding, Conv1D, LSTM, MaxPooling1D
 
-dataset_file = 'Classification/DATA/clean_tweets.csv'
-glove_file = 'Classification/GLOVE/glove.twitter.27B.100d.txt'
+dataset_file = 'DATA/clean_tweets.csv'
+glove_file = 'GLOVE/glove.twitter.27B.100d.txt'
 maxlen = 100
 
 """ define functions for treatement """ 
@@ -167,10 +167,10 @@ print('\n prediction for \n',prediction[:,0])
 # save model and weights
 save_model(
     model,
-    "Classification/GLOVE/models/model_CNN_glove100.h5",
+    "GLOVE/models/model_CNN_glove100.h5",
     overwrite=True,
     include_optimizer=True
 )
 
 # save vocabulary dictionnary
-create_csv('Classification/GLOVE/models/dict_sentimentAnalysis.csv')
+create_csv('GLOVE/models/dict_sentimentAnalysis.csv')
