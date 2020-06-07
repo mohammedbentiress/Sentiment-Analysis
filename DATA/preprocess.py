@@ -2,6 +2,8 @@ import csv
 import re
 import itertools
 import random
+import string
+import pandas as pd
 
 # emoji dictionnary
 def load_dict_smileys():
@@ -195,67 +197,101 @@ def load_dict_contractions():
         "commin":"comming"
         }   
 
-#adding Header
-clean = open('Data/clean_tweets.csv',encoding="ISO-8859-1",mode ='w')
-Header ='sentiment,tweet'
-print(f'{Header}',file=clean)
+#files names
+dataset = 'Classification/DATA/sentiment140_dataset.csv'
+clean_dataset = 'Classification/DATA/clean_tweets.csv'
+
+#remove poncuations
+def remove_punctuation(text):
+    for punctuation in string.punctuation:
+        text = text.replace(punctuation, ' ')
+    return text
+
+#function shuffle
+def shuffle(filename):
+    df = pd.read_csv(filename, encoding="ISO-8859-1")
+    ds = df.sample(frac=1)
+    ds.to_csv(filename,header = ['sentiment','tweet'], index=False, encoding="ISO-8859-1")
+
+#function to preprocess tweets
+def preprocess(input_file, output_file):
+    clean_dataset = open(output_file,encoding="ISO-8859-1",mode ='w')
+
+    #start preprocessing
+    with open(input_file, mode='r', encoding="ISO-8859-1") as csv_file:
+
+        csv_reader = csv.DictReader(csv_file, fieldnames=['target', 'id', 'date', 'flag', 'user', 'text'])
+        for row in csv_reader:
+            # we lower case the text
+            text = row["text"]
+            
+            
+            #Contractions
+            CONTRACTIONS = load_dict_contractions()
+            words_c = text.split()
+            reformed_c = [CONTRACTIONS[word] if word in CONTRACTIONS else word for word in words_c]
+            text = ' '.join(reformed_c)
+            
+            # Replace emoji by their sentiment
+            SMILEY = load_dict_smileys()  
+            words_e = text.split()
+            reformed_e = [SMILEY[word] if word in SMILEY else word for word in words_e]
+            text = ' '.join(reformed_e)
+                
+            # to lower key
+            text = text.lower()
+            
+    
+            #Remove usernames
+            text = re.sub('@[^\s]+','', text)
+            
+            # replace hashtags by just words
+            text = re.sub(r'#([^\s]+)', r'\1', text)
+
+            # remove links
+            text = re.sub('((www\.[^\s]+)|((https|http)?://[^\s]+))','',text)
+
+            # remove ponctuations
+            text = remove_punctuation(text)
+
+            # remove numbers and digits
+            text = re.sub(r'[0-9]+', '', text)
+
+            # Remove characters which repeat more than twice in a string
+            text = re.sub('(.)\\1{2,}','\\1',text)
+
+            # correct all multiple white spaces to a single white space
+            text = re.sub('[\s]+', ' ', text)
+
+            # Additional clean up : removing words less than 2 chars, and remove space at the beginning and teh end
+            text = re.sub(r'\W*\b\w{1,2}\b', '', text)
+            text = text.strip()
+
+            #copy data in our file
+            if( text != ""):
+                if(row["target"]=="0"):
+                    print(f'negative,{text}', file=clean_dataset)
+                else:
+                    print(f'positive,{text}',file=clean_dataset)
+
+
+
+
+
+#main preprocessing
+preprocess(dataset ,clean_dataset)
 
 #shuffle lines
-lines = open('Data/sentiment140.csv',encoding="ISO-8859-1",mode ='r').readlines()
-random.shuffle(lines)
-open('Data/sentiment140.csv',encoding="ISO-8859-1",mode ='w').writelines(lines)
+shuffle(clean_dataset)
 
-#start preprocessing
-with open('Data/sentiment140.csv', mode='r', encoding="ISO-8859-1") as csv_file: 
-    csv_reader = csv.DictReader(csv_file, fieldnames=['target', 'id', 'date', 'flag', 'user', 'text'])
 
-    for row in csv_reader:
 
-        # we lower case the text
-        text = row["text"]
 
-        #Contractions
-        CONTRACTIONS = load_dict_contractions()
-        words_c = text.split()
-        reformed_c = [CONTRACTIONS[word] if word in CONTRACTIONS else word for word in words_c]
-        text = ' '.join(reformed_c)
 
-        # Replace emoji by their sentiment
-        SMILEY = load_dict_smileys()  
-        words_e = text.split()
-        reformed_e = [SMILEY[word] if word in SMILEY else word for word in words_e]
-        text = ' '.join(reformed_e)
 
-        # to lower key
-        text = text.lower()
-       
-        #Remove usernames
-        text = re.sub('@[^\s]+','', text)
 
-        # replace hashtags by just words
-        text = re.sub(r'#([^\s]+)', r'\1', text)
 
-        # remove links
-        text = re.sub('((www\.[^\s]+)|((https|http)?://[^\s]+))','',text)
 
-        # remove ponctuations
-        text = re.sub('[\.\,\!\?\:\;\-\_\=\+\*\#\(\)\'\"\^\{\}\@\[\]\%]', ' ', text)
 
-        #Remove characters which repeat more than twice in a string
-        text = re.sub('(.)\\1{2,}','\\1',text)
 
-        #correct all multiple white spaces to a single white space
-        text = re.sub('[\s]+', ' ', text)
 
-        # Additional clean up : removing words less than 2 chars, and remove space at the beginning and teh end
-        text = re.sub(r'\W*\b\w{1,2}\b', '', text)
-        text = text.strip()
-
-        #copy data in our file
-        
-        if(row["target"]=="0"):
-            print(f'negative,{text}', file=clean)
-        else:
-           print(f'positive,{text}',file=clean)
-
-clean.close()
