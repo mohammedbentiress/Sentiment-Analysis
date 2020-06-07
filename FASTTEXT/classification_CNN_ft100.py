@@ -16,8 +16,8 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.layers import Activation, Dropout, Dense, Flatten, GlobalMaxPool1D, Embedding, Conv1D, LSTM
 from gensim.models import fasttext
 
-dataset_file = 'Classification/DATA/clean_tweets.csv'
-ft_file = 'Classification/FASTTEXT/cc.en.100.bin'
+dataset_file = 'DATA/clean_tweets.csv'
+ft_file = 'FASTTEXT/cc.en.100.bin'
 maxlen = 100
 
 """ define functions for treatement """ 
@@ -164,7 +164,7 @@ print('\n prediction for \n',prediction[:,0])
 # save model and weights
 save_model(
     model,
-    "Classification/FASTTEXT/models/model_CNN_ft100.h5",
+    "FASTTEXT/models/model_CNN_ft100.h5",
     overwrite=True,
     include_optimizer=True
 )
