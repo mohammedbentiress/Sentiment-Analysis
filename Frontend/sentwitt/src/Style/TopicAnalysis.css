@@ -1,0 +1,13 @@
+.MuiGrid-container {
+  justify-content: center;
+}
+
+.MuiGrid-item {
+  margin-bottom: 30px !important;
+}
+
+@media screen and (max-width: 500px) {
+  #Topics-form {
+    width: 80%;
+  }
+}
